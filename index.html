@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
+    <!-- BARIS PALING PENTING UNTUK TAMPILAN MOBILE -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>AI SUKEPLAY</title>
     <link rel="stylesheet" href="style.css">
     <!-- Pustaka PeerJS untuk menjadi Client -->
@@ -11,6 +14,7 @@
     <div class="container">
         <header class="app-header">
             <h1>AI SUKEPLAY 🎶</h1>
+            <p>Pembuat: <a href="https://www.tiktok.com/@david.paliwan" target="_blank" rel="noopener noreferrer">David Paliwan, S.Kom</a></p>
         </header>
 
         <!-- Bagian Koneksi, ditampilkan di awal -->
@@ -20,19 +24,24 @@
                 <input type="text" id="room-id-input" placeholder="Enter Host Room ID">
                 <button id="connect-btn">Connect</button>
             </div>
-            <p id="connection-status" class="status-message"></p>
+            <p id="connection-status" class="status-message">Disconnected</p>
         </div>
 
-        <!-- Bagian Utama, disembunyikan sampai terhubung -->
+        <!-- Bagian Utama Aplikasi, disembunyikan sampai terhubung -->
         <main class="main-content" id="main-app" style="display: none;">
+            
+            <!-- Kartu Now Playing -->
             <div class="card player-box">
                 <h2>Now Playing</h2>
-                <p id="now-playing">Loading...</p>
+                <p id="now-playing">Connecting to host...</p>
                 <p id="wait-time" class="wait-time"></p> 
                 <div id="ai-intro" class="intro"></div>
             </div>
+
+            <!-- Kartu Request Lagu -->
             <div class="card request-box">
                 <h2>Request a Song</h2>
+                <!-- Input Nama dipisah agar lebih jelas di mobile -->
                 <input type="text" id="name-input" placeholder="Your Name" style="margin-bottom: 10px;">
                 <div class="input-group">
                     <input type="text" id="song-query-input" placeholder="Song title or artist">
@@ -40,12 +49,21 @@
                 </div>
                 <p id="request-status" class="status-message"></p>
             </div>
+            
+            <!-- Kartu Antrian -->
             <div class="card queue-box">
                 <h2>Up Next</h2>
-                <ul id="queue-list"><li>Loading...</li></ul>
+                <ul id="queue-list">
+                    <li>-</li>
+                </ul>
             </div>
         </main>
+        
+        <footer class="app-footer">
+            <p>Request songs from your device!</p>
+        </footer>
     </div>
+    
     <script src="client.js"></script>
 </body>
 </html>
