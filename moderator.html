@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI SUKEPLAY - Moderator</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Pustaka PeerJS untuk menjadi Client -->
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="app-header">
+            <h1>Moderator Mode 🛡️</h1>
+        </header>
+
+        <!-- Bagian Koneksi, sama seperti Client -->
+        <div class="card" id="connection-box">
+            <h2>Connect to Host</h2>
+            <div class="input-group">
+                <input type="text" id="room-id-input" placeholder="Enter Host Room ID">
+                <button id="connect-btn">Connect</button>
+            </div>
+            <p id="connection-status" class="status-message">Disconnected</p>
+        </div>
+
+        <!-- Bagian Utama Aplikasi Moderator -->
+        <main class="main-content" id="main-app" style="display: none;">
+            
+            <!-- Kartu Now Playing (hanya untuk info) -->
+            <div class="card player-box">
+                <h2>Now Playing</h2>
+                <p id="now-playing">Connecting to host...</p>
+                <p id="wait-time" class="wait-time"></p> 
+            </div>
+            
+            <!-- Kartu Antrian dengan Tombol Hapus -->
+            <div class="card queue-box moderator-queue">
+                <h2>Moderation Queue</h2>
+                <ul id="queue-list">
+                    <li>-</li>
+                </ul>
+            </div>
+        </main>
+        
+    </div>
+    <script src="moderator.js"></script>
+</body>
+</html>
