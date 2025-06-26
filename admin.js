@@ -1,7 +1,8 @@
-// public/admin.js (Versi Perbaikan untuk Tombol Start Host)
+// public/admin.js (Versi Final dengan DOMContentLoaded dan Debugging)
 
+// Menjalankan seluruh skrip setelah halaman HTML selesai dimuat
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM sepenuhnya dimuat. Skrip admin.js dijalankan.");
+    console.log("DOM Loaded. Admin script is now running.");
 
     const API_URL = 'http://localhost:3000';
 
@@ -24,22 +25,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const requestStatusElem = document.getElementById('request-status');
     const skipBtn = document.getElementById('skip-btn');
 
+    // Cek apakah elemen penting ada, untuk mencegah error
+    if (!startHostBtn || !customRoomIdInput) {
+        console.error("Critical Error: Tombol 'Start Host' atau Input Room ID tidak ditemukan di HTML. Periksa ID elemen.");
+        alert("Halaman tidak termuat dengan benar. Coba refresh.");
+        return;
+    }
+
     let peer = null;
     let connections = [];
-    let syncInterval = null; // Variabel untuk menyimpan interval
-
-    // Pemeriksaan elemen penting
-    if (!startHostBtn) {
-        console.error("KRITIS: Tombol 'Start Host' (ID: start-host-btn) tidak ditemukan!");
-        return;
-    }
-    if (!customRoomIdInput) {
-        console.error("KRITIS: Input 'Custom Room ID' (ID: custom-room-id-input) tidak ditemukan!");
-        return;
-    }
+    let syncInterval = null;
 
     function startHost() {
-        console.log("Tombol 'Start Host' diklik.");
+        console.log("Fungsi startHost() dipanggil.");
         const customRoomId = customRoomIdInput.value.trim();
         if (!customRoomId) {
             alert("Silakan masukkan ID Room terlebih dahulu.");
@@ -50,10 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
         customRoomIdInput.disabled = true;
         hostStatusElem.textContent = "Connecting to PeerJS server...";
 
-        if (peer) {
-            peer.destroy();
-        }
-
+        if (peer) peer.destroy();
+        
         console.log(`Mencoba membuat Peer dengan ID: ${customRoomId}`);
         peer = new Peer(customRoomId);
 
@@ -62,28 +58,29 @@ document.addEventListener('DOMContentLoaded', () => {
             hostSetupBox.style.display = 'none';
             mainAdminApp.style.display = 'block';
             roomIdDisplayElem.textContent = id;
-            
-            if (syncInterval) clearInterval(syncInterval); // Hapus interval lama jika ada
+            if (syncInterval) clearInterval(syncInterval);
             syncInterval = setInterval(syncAndBroadcast, 2000);
         });
 
-        peer.on('connection', conn => {
-            console.log(`Client terhubung: ${conn.peer}`);
-            connections.push(conn);
-            updateClientCount();
-            conn.on('data', data => { if (data.type === 'request') handleClientRequest(data); });
-            conn.on('close', () => {
-                connections = connections.filter(c => c.peer !== conn.peer);
-                updateClientCount();
-                console.log(`Client terputus: ${conn.peer}`);
-            });
-        });
+        peer.on('connection', handleNewConnection);
         
         peer.on('error', err => {
             console.error("PeerJS Error:", err);
             hostStatusElem.textContent = `Error: ${err.type}. ID mungkin sudah dipakai atau koneksi gagal.`;
             startHostBtn.disabled = false;
             customRoomIdInput.disabled = false;
+        });
+    }
+
+    function handleNewConnection(conn) {
+        console.log(`Client terhubung: ${conn.peer}`);
+        connections.push(conn);
+        updateClientCount();
+        conn.on('data', data => { if (data.type === 'request') handleClientRequest(data); });
+        conn.on('close', () => {
+            connections = connections.filter(c => c.peer !== conn.peer);
+            updateClientCount();
+            console.log(`Client terputus: ${conn.peer}`);
         });
     }
 
@@ -113,13 +110,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`${API_URL}/api/status`);
             const state = await response.json();
             handleStatusUpdate(state);
-
-            // Hanya broadcast jika ada perubahan atau ada client
-            if(connections.length > 0) {
+            if (connections.length > 0) {
                 broadcastStateToClients(state);
             }
         } catch (error) {
-            // Error ini wajar jika server.py belum jalan, tidak perlu log terus menerus
+            // Tidak perlu menampilkan error di console terus-menerus jika server belum jalan
         }
     }
     function handleStatusUpdate(data) {
@@ -140,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
             nowPlayingElem.innerHTML = `${nowPlayingData.title}<br><span class="requester-info">Req: ${nowPlayingData.requester}</span>`;
             aiIntroElem.textContent = `“${nowPlayingData.intro}”`;
             aiIntroElem.style.display = 'block';
-            if (!audioPlayer.src.includes(nowPlayingData.stream_url)) {
+            if (audioPlayer.src !== nowPlayingData.stream_url) {
                 audioPlayer.src = nowPlayingData.stream_url;
                 audioPlayer.play().catch(e => console.error("Autoplay gagal:", e));
             }
@@ -165,5 +160,4 @@ document.addEventListener('DOMContentLoaded', () => {
         queryInput.value = '';
     });
     queryInput.addEventListener('keypress', e => { if (e.key === 'Enter') requestBtn.click(); });
-
 });
