@@ -1,121 +1,209 @@
-/* style.css */
+/* public/style.css */
+/* Spotify Mobile Theme by AI */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
-/* Gaya Dasar dan Font */
-body {
-    background-color: #121212; /* Latar belakang hitam pekat seperti Spotify */
-    color: #e0e0e0; /* Warna teks putih keabu-abuan */
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+/* --- Reset & Global --- */
+* {
+    box-sizing: border-box;
     margin: 0;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
+    padding: 0;
 }
 
-.container {
-    width: 100%;
-    max-width: 500px;
+body {
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background-color: #121212; /* Spotify very dark grey */
+    color: #e0e0e0;
     display: flex;
-    flex-direction: column;
-    gap: 20px; /* Jarak antar kartu */
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
 }
 
 h1, h2, h3 {
-    margin-top: 0;
-    color: #ffffff; /* Judul lebih putih */
+    color: #ffffff;
+    font-weight: 700;
 }
 
-h1 {
+/* --- App Container (Simulates Phone Screen) --- */
+.container {
+    width: 100%;
+    max-width: 420px; /* Typical mobile screen width */
+    min-height: 100vh;
+    background-color: #000000;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- App Header & Footer --- */
+.app-header, .app-footer {
+    padding: 16px;
     text-align: center;
-    color: #1DB954; /* Warna hijau khas */
+}
+.app-header h1 {
+    font-size: 1.5em;
+    color: #1DB954; /* Spotify Green */
+}
+.app-footer {
+    color: #535353;
+    font-size: 0.8em;
 }
 
-h1 .note-icon {
-    display: inline-block;
-    transform: translateY(2px);
+/* --- Main Content Area --- */
+.main-content {
+    flex-grow: 1;
+    padding: 0 12px;
 }
 
-p {
-    text-align: center;
-    color: #b3b3b3; /* Teks sekunder */
-}
-
-/* Gaya Kartu */
+/* --- Card Style --- */
 .card {
-    background-color: #1e1e1e; /* Warna kartu yang sedikit lebih terang */
-    border-radius: 8px; /* Sudut melengkung */
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #181818;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
 }
-
 .card h2 {
-    margin-bottom: 20px;
-    border-bottom: 1px solid #333;
-    padding-bottom: 10px;
+    font-size: 1.1em;
+    margin-bottom: 12px;
 }
 
-/* Gaya Form (Input dan Tombol) */
-input[type="text"] {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    background-color: #333;
-    border: 1px solid #555;
+/* --- Player Box --- */
+.player-box #now-playing {
+    font-size: 1.3em;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.player-box .intro {
+    font-size: 0.9em;
+    color: #b3b3b3;
+    font-style: italic;
+    background-color: #282828;
+    padding: 8px;
     border-radius: 4px;
-    color: #ffffff;
-    box-sizing: border-box; /* Penting agar padding tidak merusak layout */
-    font-size: 16px;
+    margin-bottom: 16px;
+    display: none; /* Hidden by default */
 }
 
-input[type="text"]:focus {
-    outline: none;
-    border-color: #1DB954;
+.wait-time {
+    font-size: 0.85em;
+    color: #b3b3b3;
+    margin-top: 4px;
+    min-height: 1.2em;
 }
 
-button {
+.player-box audio {
     width: 100%;
-    padding: 12px;
-    background-color: #1DB954; /* Warna hijau khas */
+    accent-color: #1DB954;
+}
+
+/* --- Host Controls (Skip Button) --- */
+.host-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 12px;
+}
+.host-controls #skip-btn {
+    background: none;
     border: none;
-    border-radius: 25px; /* Tombol lebih bulat */
+    color: #fff;
+    font-size: 2.5em;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.host-controls #skip-btn:hover {
+    transform: scale(1.1);
+}
+.host-controls #skip-btn:disabled {
+    color: #535353;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* --- Request Box & Connection Box --- */
+.input-group {
+    display: flex;
+    gap: 10px;
+}
+.input-group input, #name-input, #room-id-input {
+    flex-grow: 1;
+    padding: 12px;
+    border-radius: 25px;
+    border: 1px solid #535353;
+    background-color: #282828;
+    color: #e0e0e0;
+    font-size: 1em;
+    width: 100%;
+}
+#name-input {
+    margin-bottom: 10px; /* Jarak untuk input nama di client */
+}
+.input-group button, #connect-btn {
+    background-color: #1DB954;
     color: #ffffff;
-    font-size: 16px;
-    font-weight: bold;
+    border: none;
+    padding: 0 20px;
+    border-radius: 25px;
+    font-weight: 700;
     cursor: pointer;
     transition: background-color 0.2s;
 }
-
-button:hover {
-    background-color: #1ed760; /* Warna hijau lebih terang saat disentuh */
+.input-group button:hover, #connect-btn:hover {
+    background-color: #1ed760;
 }
-
-/* Gaya Antrian dan Now Playing */
-#now-playing-info, #queue-list {
-    text-align: left;
-}
-
-#queue-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-#queue-list li {
-    background-color: #282828;
-    padding: 10px 15px;
-    border-radius: 4px;
-    margin-bottom: 8px;
-    font-size: 14px;
-}
-
-/* Gaya Player Audio di Halaman Admin */
-#audio-player {
-    width: 100%;
-    margin-top: 15px;
-}
-
-#next-btn {
+.request-box .status-message, #connection-status {
+    font-size: 0.8em;
+    text-align: center;
     margin-top: 10px;
-    width: auto;
-    padding: 8px 20px;
-    font-size: 14px;
+    height: 1em;
+    color: #b3b3b3;
+}
+
+/* --- Queue Box --- */
+.queue-box ul {
+    list-style: none;
+    counter-reset: queue-counter;
+}
+.queue-box li {
+    background-color: #282828;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+}
+.queue-box li::before {
+    counter-increment: queue-counter;
+    content: counter(queue-counter);
+    color: #b3b3b3;
+    font-weight: 700;
+    margin-right: 12px;
+    min-width: 1.5em;
+    text-align: right;
+}
+
+/* --- CSS untuk Nama Perequest --- */
+.requester-info {
+    font-size: 0.8em;
+    color: #b3b3b3; /* Warna abu-abu yang lebih lembut */
+    font-weight: 400; /* Berat font normal */
+    display: block; /* Membuatnya di baris baru untuk Now Playing */
+    margin-top: 4px;
+}
+
+.queue-box li .requester-info {
+    margin-left: auto; /* Mendorong nama ke sisi kanan */
+    display: inline;  /* Override display block untuk antrian */
+    padding-left: 10px; /* Memberi sedikit jarak */
+}
+
+/* --- Styling untuk link di header --- */
+.app-header a {
+    color: #1DB954; /* Menggunakan warna hijau Spotify agar menonjol */
+    text-decoration: none; /* Menghapus garis bawah default */
+    transition: color 0.2s; /* Efek transisi halus saat hover */
+}
+
+.app-header a:hover {
+    color: #1ed760; /* Warna hijau yang sedikit lebih terang */
+    text-decoration: underline; /* Menampilkan garis bawah saat di-hover */
 }
