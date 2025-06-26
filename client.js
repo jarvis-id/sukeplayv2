@@ -1,16 +1,15 @@
-// public/client.js (Versi dengan Nama Perangkat Otomatis)
+// public/client.js (Versi Hybrid: Deteksi Otomatis + Nama Panggilan)
 document.addEventListener('DOMContentLoaded', () => {
-    // Elemen Koneksi
+    // Elemen UI (tidak ada perubahan di sini)
     const connectionBox = document.getElementById('connection-box');
     const mainApp = document.getElementById('main-app');
     const roomIdInput = document.getElementById('room-id-input');
     const connectBtn = document.getElementById('connect-btn');
     const connectionStatusElem = document.getElementById('connection-status');
-
-    // Elemen Aplikasi
     const nowPlayingElem = document.getElementById('now-playing');
     const aiIntroElem = document.getElementById('ai-intro');
     const queueListElem = document.getElementById('queue-list');
+    const nameInput = document.getElementById('name-input');
     const queryInput = document.getElementById('song-query-input');
     const requestBtn = document.getElementById('request-btn');
     const requestStatusElem = document.getElementById('request-status');
@@ -21,36 +20,40 @@ document.addEventListener('DOMContentLoaded', () => {
     let progressTimer = null;
 
     // =========================================================
-    // == FUNGSI BARU UNTUK MENDETEKSI NAMA PERANGKAT ==
+    // == LOGIKA BARU UNTUK NAMA PERANGKAT OTOMATIS + PANGGILAN ==
     // =========================================================
-    function getDeviceName() {
+    
+    function getGenericDeviceName() {
         const ua = navigator.userAgent;
-        
-        // Coba deteksi model ponsel yang umum
-        let match = ua.match(/\(([^;]+); L/); // Pola umum untuk Android (e.g., "(SM-A528B; L...")
-        if (match && match[1]) {
-             // Membersihkan nama, misal "SM-A528B" menjadi "Galaxy A52s" (jika memungkinkan)
-             // Ini adalah contoh sederhana, deteksi akurat bisa sangat kompleks
-             const model = match[1].trim();
-             if (model.includes('SM-')) return `Galaxy ${model.substring(3)}`;
-             return model; // Kembalikan model apa adanya
-        }
-
-        if (/iPhone/.test(ua)) return "iPhone";
-        if (/iPad/.test(ua)) return "iPad";
-
-        // Deteksi sistem operasi
+        if (/iPhone|iPad|iPod/.test(ua)) return "iPhone/iPad";
         if (/Android/.test(ua)) return "Android Device";
         if (/Windows/.test(ua)) return "Windows PC";
         if (/Macintosh/.test(ua)) return "Mac";
         if (/Linux/.test(ua)) return "Linux PC";
-        
-        return "Unknown Device"; // Default jika tidak ada yang cocok
+        return "Device";
     }
-    
-    // Simpan nama perangkat saat halaman dimuat
-    const deviceName = getDeviceName();
 
+    function initializeRequesterName() {
+        // Prioritas 1: Cek apakah ada nama panggilan yang disimpan
+        const savedName = localStorage.getItem('sukeplay_nickname');
+        if (savedName) {
+            nameInput.value = savedName;
+            console.log(`Nama panggilan '${savedName}' dimuat dari penyimpanan.`);
+            return;
+        }
+
+        // Prioritas 2: Jika tidak ada, gunakan nama perangkat generik
+        const genericName = getGenericDeviceName();
+        nameInput.value = genericName;
+        console.log(`Nama perangkat generik terdeteksi: '${genericName}'.`);
+    }
+
+    function saveNameToStorage(name) {
+        localStorage.setItem('sukeplay_nickname', name);
+        console.log(`Nama panggilan '${name}' disimpan.`);
+    }
+
+    // --- Sisa kode (tidak banyak berubah) ---
 
     function initializePeer() {
         peer = new Peer();
@@ -60,12 +63,9 @@ document.addEventListener('DOMContentLoaded', () => {
     connectBtn.addEventListener('click', () => {
         const roomId = roomIdInput.value.trim();
         if (!roomId) { alert("Masukkan Room ID."); return; }
-        
         connectionStatusElem.textContent = "Connecting...";
         conn = peer.connect(roomId);
-
         conn.on('open', () => {
-            console.log("Terhubung ke Host!");
             connectionBox.style.display = 'none';
             mainApp.style.display = 'block';
         });
@@ -78,21 +78,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ========================================================
-    // == FUNGSI REQUEST SONG DIMODIFIKASI ==
-    // ========================================================
     function requestSong() {
+        const name = nameInput.value.trim();
         const query = queryInput.value.trim();
-        // Tidak perlu lagi mengambil input nama
+
+        if (!name) {
+            alert("Nama Anda tidak boleh kosong.");
+            nameInput.focus();
+            return;
+        }
         if (!query) {
-            alert("Please enter a song title or artist.");
+            alert("Judul lagu tidak boleh kosong.");
+            queryInput.focus();
             return;
         }
 
+        // Simpan nama yang digunakan ke localStorage untuk sesi berikutnya
+        saveNameToStorage(name);
+
         if (conn && conn.open) {
             requestStatusElem.textContent = "Mengirim request...";
-            // Kirim request dengan nama perangkat yang sudah dideteksi
-            conn.send({ type: 'request', name: deviceName, query: query });
+            conn.send({ type: 'request', name: name, query: query });
             queryInput.value = '';
             setTimeout(() => { requestStatusElem.textContent = ''; }, 3000);
         } else {
@@ -108,6 +114,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event Listeners
     requestBtn.addEventListener('click', requestSong);
     queryInput.addEventListener('keypress', e => { if (e.key === 'Enter') requestSong(); });
+    nameInput.addEventListener('keypress', e => { if (e.key === 'Enter') requestSong(); });
 
+    // Inisialisasi
     initializePeer();
+    initializeRequesterName(); // Ganti pemanggilan fungsi di sini
 });
