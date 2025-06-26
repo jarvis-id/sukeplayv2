@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>README - Proyek AI SUKEPLAY</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Source+Code+Pro&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 25px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2, h3 {
+            color: #1DB954; /* Warna hijau khas */
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: 1.2em;
+            color: #555; /* Dibuat sedikit lebih gelap */
+            margin-top: 5px; /* Diberi sedikit jarak dari judul */
+            margin-bottom: 30px;
+        }
+
+        code, pre {
+            font-family: 'Source Code Pro', monospace;
+            background-color: #eef;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        pre {
+            padding: 15px;
+            overflow-x: auto;
+            background-color: #2d2d2d;
+            color: #f4f4f4;
+        }
+
+        ul, ol {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .highlight {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-left: 5px solid #ffeeba;
+            margin: 20px 0;
+        }
+        
+        .highlight strong {
+            color: #856404;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #777;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI SUKEPLAY Jukebox 🎶</h1>
+        <!-- ==================================== -->
+        <!-- == ATRIBUSI NAMA DITAMBAHKAN DI SINI == -->
+        <!-- ==================================== -->
+        <p class="subtitle">Dibuat oleh: <strong>David Paliwan, S.Kom</strong></p>
+
+        <h2>Deskripsi Proyek</h2>
+        <p>
+            AI SUKEPLAY adalah sebuah sistem jukebox modern yang memungkinkan pengguna untuk me-request lagu dari perangkat apa pun (ponsel, laptop) untuk diputar di perangkat Host (komputer/ponsel yang terhubung ke speaker). Proyek ini menggunakan arsitektur Peer-to-Peer (P2P) yang kuat, sehingga tidak memerlukan server publik yang kompleks dan dapat menghubungkan pengguna meskipun berada di jaringan yang berbeda.
+        </p>
+        <p>
+            Kecerdasan Buatan (AI) dari Google Gemini digunakan untuk dua hal utama:
+        </p>
+        <ul>
+            <li><strong>Pencarian Lagu Cerdas:</strong> Menerjemahkan permintaan pengguna (misal: "lagu galau tahun 2000an") menjadi video musik yang relevan di YouTube.</li>
+            <li><strong>Pengantar DJ Otomatis:</strong> Memberikan intro atau fakta unik untuk setiap lagu yang akan diputar, menciptakan pengalaman seperti mendengarkan radio.</li>
+        </ul>
+
+        <h2>Arsitektur & Alur Kerja</h2>
+        <p>
+            Proyek ini menggunakan arsitektur P2P yang difasilitasi oleh GitHub Pages sebagai "jembatan" dan server lokal sebagai "otak".
+        </p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Komponen</th>
+                    <th>Teknologi</th>
+                    <th>Peran Utama</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Frontend (GitHub Pages)</strong></td>
+                    <td>HTML, CSS, JavaScript</td>
+                    <td>Menyediakan antarmuka untuk <strong>Admin (Host)</strong> dan <strong>Client (Requester)</strong>. Bertindak sebagai titik pertemuan awal.</td>
+                </tr>
+                <tr>
+                    <td><strong>Komunikasi Real-time</strong></td>
+                    <td>WebRTC (via PeerJS)</td>
+                    <td>Membangun koneksi langsung antara Admin dan Client setelah mereka "berkenalan" melalui server PeerJS publik, memungkinkan pengiriman request dan update status secara instan.</td>
+                </tr>
+                <tr>
+                    <td><strong>Backend (Server Lokal)</strong></td>
+                    <td>Python, Flask, yt-dlp</td>
+                    <td>Berjalan di perangkat Admin. Bertugas menerima perintah dari Halaman Admin, memproses pencarian lagu ke AI, mendapatkan URL stream dari YouTube, dan mengelola antrian lagu.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Fitur Utama</h2>
+        <ul>
+            <li><strong>Request Lintas Jaringan:</strong> Client dapat me-request lagu dari jaringan mana pun (WiFi berbeda, data seluler) selama terhubung ke internet.</li>
+            <li><strong>Room ID Kustom:</strong> Admin dapat menentukan sendiri ID room yang mudah diingat (misal: <code>cafe-david</code>) untuk memudahkan akses client.</li>
+            <li><strong>Pencarian Cerdas Berbasis AI:</strong> Menggunakan Google Gemini untuk menemukan lagu berdasarkan kata kunci.</li>
+            <li><strong>Tanpa Download & Tanpa Database:</strong> Menggunakan metode streaming langsung dari YouTube (via <code>yt-dlp</code>), sehingga tidak memakan ruang penyimpanan dan lagu dapat diputar secara instan.</li>
+            <li><strong>Sesi Login YouTube:</strong> Kemampuan untuk menggunakan file <code>cookies.txt</code> agar <code>yt-dlp</code> dapat mengakses video yang mungkin dibatasi untuk pengguna yang tidak login.</li>
+            <li><strong>Antrian Lagu Otomatis:</strong> Lagu yang di-request akan masuk ke antrian dan diputar secara otomatis setelah lagu sebelumnya selesai.</li>
+        </ul>
+
+        <h2>Cara Menjalankan Proyek</h2>
+        <p>
+            Untuk menjalankan proyek ini, Anda hanya perlu menyiapkan Backend (Server Lokal) di satu komputer/ponsel, lalu mengakses Frontend dari browser.
+        </p>
+        
+        <h3>1. Persiapan Server Lokal (Perangkat Admin)</h3>
+        <ol>
+            <li>
+                <strong>Siapkan Folder:</strong> Pastikan Anda memiliki folder proyek dengan struktur berikut:
+                <pre><code>AI-SUKEPLAY/
+├── public/
+│   ├── admin.html
+│   ├── client.html
+│   └── ... (file js, css lainnya)
+├── cookies.txt  (Opsional tapi direkomendasikan)
+└── server.py
+</code></pre>
+            </li>
+            <li>
+                <strong>Buat Lingkungan Virtual Python:</strong>
+                <pre><code>python -m venv venv
+# Windows:
+venv\Scripts\activate
+# MacOS/Linux:
+source venv/bin/activate
+</code></pre>
+            </li>
+            <li>
+                <strong>Instal Dependensi:</strong> Buat file <code>requirements.txt</code> dengan isi di bawah, lalu jalankan <code>pip install -r requirements.txt</code>.
+                <pre><code># requirements.txt
+Flask
+Flask-Cors
+requests
+yt-dlp
+google-api-python-client
+</code></pre>
+            </li>
+            <li>
+                <strong>Siapkan API Keys:</strong> Buka file <code>server.py</code> dan masukkan <strong>YOUTUBE_API_KEY</strong> dan <strong>GEMINI_API_KEY</strong> Anda.
+            </li>
+             <li>
+                <strong>(Opsional) Siapkan `cookies.txt`:</strong> Ekspor file cookie dari browser Anda saat sedang login di YouTube dan letakkan di folder yang sama dengan <code>server.py</code>.
+            </li>
+            <li>
+                <strong>Jalankan Server:</strong>
+                <pre><code>python server.py</code></pre>
+                Server lokal Anda sekarang aktif di <code>http://localhost:3000</code>.
+            </li>
+        </ol>
+
+        <h3>2. Menjalankan Sesi Jukebox</h3>
+        <ol>
+            <li>
+                <strong>Buka Halaman Admin:</strong> Di perangkat yang sama dengan server, buka halaman Admin dari GitHub Pages Anda (misal: <code>https://username.github.io/proyek/admin.html</code>).
+            </li>
+            <li>
+                <strong>Mulai Host:</strong> Masukkan ID Room yang unik (misal: <code>suke-highland</code>) dan klik "Start Host".
+            </li>
+            <li>
+                <strong>Client Bergabung:</strong> Beritahu pengguna lain untuk membuka halaman Client (misal: <code>https://username.github.io/proyek/</code>) dan memasukkan ID Room yang sama.
+            </li>
+            <li>
+                <strong>Request Lagu:</strong> Setelah terhubung, client dapat langsung me-request lagu!
+            </li>
+        </ol>
+        
+        <div class="highlight">
+            <strong>Catatan:</strong> Proyek ini dirancang untuk berjalan dengan Frontend yang di-hosting (seperti di GitHub Pages) dan Backend yang berjalan secara lokal di komputer Admin. Hal ini memungkinkan fleksibilitas dan keamanan maksimum.
+        </div>
+        
+        <!-- ================================ -->
+        <!-- == FOOTER DENGAN ATRIBUSI NAMA == -->
+        <!-- ================================ -->
+        <div class="footer">
+            <p>Proyek AI SUKEPLAY © 2024 - Dibuat dengan ❤ oleh David Paliwan, S.Kom.</p>
+        </div>
+    </div>
+</body>
+</html>
