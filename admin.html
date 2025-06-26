@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Suke Play Host</title>
+    <!-- Ganti dengan style.css Anda -->
+    <link rel="stylesheet" href="style.css"> 
+    <!-- Pustaka PeerJS dari CDN -->
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Suke Play Host 👑</h1>
+        <p>HALAMAN ADMIN</p>
+        <p>Your Room ID: <strong id="room-id">Connecting...</strong></p>
+        <p><span id="connection-count">0</span> client(s) connected.</p>
+
+        <div class="card">
+            <h2>Now Playing</h2>
+            <div id="now-playing-info">Jukebox is idle.</div>
+            <audio id="audio-player" controls></audio>
+            <button id="next-btn">>> (Next)</button>
+        </div>
+
+        <div class="card">
+            <h2>Tambahkan lagu (Manual)</h2>
+            <input type="text" id="manual-song-query" placeholder="YouTube Video ID or Title">
+            <button id="manual-add-btn">Tambahkan</button>
+        </div>
+
+        <div class="card">
+            <h2>Selanjutnya</h2>
+            <ul id="queue-list">
+                <li>Queue is empty</li>
+            </ul>
+        </div>
+    </div>
+    <script src="admin.js"></script>
+</body>
+</html>
