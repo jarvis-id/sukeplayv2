@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI SUKEPLAY - Host</title>
     <link rel="stylesheet" href="style.css">
     <!-- Pustaka PeerJS untuk menjadi Host -->
@@ -11,11 +12,22 @@
     <div class="container">
         <header class="app-header">
             <h1>Suke Play Host 👑</h1>
-            <!-- Menampilkan Room ID -->
-            <p>Your Room ID: <strong id="room-id">Connecting...</strong></p>
-            <p><span id="client-count">0</span> client(s) connected.</p>
         </header>
-        <main class="main-content">
+
+        <!-- Bagian Setup Host, ditampilkan di awal -->
+        <div class="card" id="host-setup-box">
+            <h2>Host Setup</h2>
+            <div class="input-group">
+                <input type="text" id="custom-room-id-input" placeholder="Masukkan ID Room (misal: cafe-david)">
+                <button id="start-host-btn">Start Host</button>
+            </div>
+            <p id="host-status" class="status-message">Host is not running.</p>
+        </div>
+        
+        <!-- Bagian Utama Aplikasi, disembunyikan sampai host dimulai -->
+        <main class="main-content" id="main-admin-app" style="display: none;">
+            <p style="text-align: center;">Room ID: <strong id="room-id-display"></strong> | <span id="client-count">0</span> client(s) connected.</p>
+
             <div class="card player-box">
                 <h2>Now Playing</h2>
                 <p id="now-playing">Loading...</p>
@@ -25,6 +37,7 @@
                     <button id="skip-btn" title="Skip to next song">»</button>
                 </div>
             </div>
+
             <div class="card request-box">
                 <h2>Tambahkan lagu (Manual)</h2>
                 <div class="input-group">
@@ -33,6 +46,7 @@
                 </div>
                 <p id="request-status" class="status-message"></p>
             </div>
+
             <div class="card queue-box">
                 <h2>Selanjutnya</h2>
                 <ul id="queue-list"><li>Loading...</li></ul>
