@@ -1,4 +1,5 @@
-// public/admin.js (Versi P2P Host dengan Kemampuan Moderasi)
+// public/admin.js (Versi P2P Host dengan Kemampuan Moderasi Request, Hapus, dan Skip)
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM Loaded. Admin script is now running.");
 
@@ -72,19 +73,24 @@ document.addEventListener('DOMContentLoaded', () => {
         connections.push(conn);
         updateClientCount();
 
-        // Saat menerima data dari client (bisa request lagu atau hapus lagu)
+        // Saat menerima data dari client (bisa request, hapus, atau skip)
         conn.on('data', data => {
             console.log(`Menerima data dari client ${conn.peer}:`, data);
 
             if (data.type === 'request') {
                 handleClientRequest(data);
             } 
-            // ===============================================
-            // == LOGIKA BARU UNTUK MENANGANI PERINTAH HAPUS ==
-            // ===============================================
             else if (data.type === 'remove_song' && typeof data.index === 'number') {
                 console.log(`Menerima perintah hapus untuk indeks ${data.index} dari moderator.`);
                 removeSongFromQueue(data.index);
+            }
+            // ======================================================
+            // == PENYESUAIAN: TAMBAHKAN LOGIKA UNTUK MENANGANI SKIP ==
+            // ======================================================
+            else if (data.type === 'skip_song') {
+                console.log(`Menerima perintah skip dari moderator.`);
+                // Memanggil fungsi skip yang sudah ada
+                skipNextSong();
             }
         });
 
@@ -96,9 +102,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // =======================================================
-    // == FUNGSI BARU UNTUK MENGIRIM PERINTAH HAPUS KE SERVER ==
-    // =======================================================
     async function removeSongFromQueue(index) {
         console.log(`Mengirim request hapus ke server lokal untuk indeks: ${index}`);
         try {
@@ -107,13 +110,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ index: index })
             });
-            // Tidak perlu melakukan apa-apa lagi. Perubahan akan terlihat
-            // pada siklus syncAndBroadcast() berikutnya.
         } catch (error) {
             console.error("Gagal mengirim perintah hapus ke server:", error);
         }
     }
-
 
     function updateClientCount() { clientCountElem.textContent = connections.length; }
     function broadcastStateToClients(state) { for (const conn of connections) { if (conn.open) conn.send(state); } }
@@ -135,7 +135,12 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => { requestStatusElem.textContent = ''; }, 5000);
         }
     }
-    async function skipNextSong() { await fetch(`${API_URL}/api/skip`, { method: 'POST' }); }
+
+    async function skipNextSong() {
+        console.log("Mengirim perintah skip ke server lokal.");
+        await fetch(`${API_URL}/api/skip`, { method: 'POST' }); 
+    }
+
     async function syncAndBroadcast() {
         try {
             const response = await fetch(`${API_URL}/api/status`);
@@ -148,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Tidak perlu log error terus-menerus jika server belum jalan
         }
     }
+    
     function handleStatusUpdate(data) {
         queueListElem.innerHTML = '';
         if (data.queue && data.queue.length > 0) {
@@ -161,12 +167,13 @@ document.addEventListener('DOMContentLoaded', () => {
             queueListElem.innerHTML = '<li>Queue is empty</li>';
             skipBtn.disabled = true;
         }
+        
         const nowPlayingData = data.nowPlaying;
         if (nowPlayingData) {
             nowPlayingElem.innerHTML = `${nowPlayingData.title}<br><span class="requester-info">Req: ${nowPlayingData.requester}</span>`;
             aiIntroElem.textContent = `“${nowPlayingData.intro}”`;
             aiIntroElem.style.display = 'block';
-            // Perbaikan kecil: Cek apakah stream_url ada sebelum mencoba memuatnya
+            skipBtn.disabled = false; // Aktifkan tombol skip jika ada lagu
             if (nowPlayingData.stream_url && audioPlayer.src !== nowPlayingData.stream_url) {
                 audioPlayer.src = nowPlayingData.stream_url;
                 audioPlayer.play().catch(e => console.error("Autoplay gagal:", e));
@@ -175,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
             nowPlayingElem.innerHTML = "Jukebox is idle.";
             aiIntroElem.style.display = 'none';
             if (audioPlayer.src) audioPlayer.src = '';
-            skipBtn.disabled = true;
+            skipBtn.disabled = true; // Nonaktifkan tombol skip jika tidak ada lagu
         }
     }
 
@@ -184,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
     customRoomIdInput.addEventListener('keypress', e => { if (e.key === 'Enter') startHost(); });
 
     audioPlayer.addEventListener('ended', skipNextSong);
-    skipBtn.addEventListener('click', skipNextSong);
+    skipBtn.addEventListener('click', skipNextSong); // Tombol skip admin juga memanggil fungsi yang sama
     requestBtn.addEventListener('click', () => {
         const query = queryInput.value.trim();
         if (query) {
