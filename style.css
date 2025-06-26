@@ -174,6 +174,36 @@ button:disabled {
     margin-top: 2px;
 }
 
+/* Gaya untuk antrian di halaman moderator */
+.moderator-queue li {
+    justify-content: space-between; /* Mendorong tombol hapus ke kanan */
+}
+
+.moderator-queue .song-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.remove-btn {
+    background-color: #d9534f; /* Warna merah untuk bahaya/hapus */
+    color: white;
+    border: none;
+    border-radius: 50%; /* Membuatnya bulat */
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    line-height: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    flex-shrink: 0; /* Mencegah tombol mengecil */
+    margin-left: 10px;
+}
+
+.remove-btn:hover {
+    background-color: #c9302c;
+    transform: scale(1.1);
+}
 .queue-box .requester-info {
     font-style: italic;
     padding-left: 10px;
