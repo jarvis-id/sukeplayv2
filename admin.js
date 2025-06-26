@@ -1,6 +1,4 @@
-// public/admin.js (Versi Final dengan DOMContentLoaded dan Debugging)
-
-// Menjalankan seluruh skrip setelah halaman HTML selesai dimuat
+// public/admin.js (Versi P2P Host dengan Kemampuan Moderasi)
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM Loaded. Admin script is now running.");
 
@@ -25,10 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const requestStatusElem = document.getElementById('request-status');
     const skipBtn = document.getElementById('skip-btn');
 
-    // Cek apakah elemen penting ada, untuk mencegah error
     if (!startHostBtn || !customRoomIdInput) {
-        console.error("Critical Error: Tombol 'Start Host' atau Input Room ID tidak ditemukan di HTML. Periksa ID elemen.");
-        alert("Halaman tidak termuat dengan benar. Coba refresh.");
+        console.error("Critical Error: Tombol 'Start Host' atau Input Room ID tidak ditemukan di HTML.");
         return;
     }
 
@@ -50,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (peer) peer.destroy();
         
-        console.log(`Mencoba membuat Peer dengan ID: ${customRoomId}`);
         peer = new Peer(customRoomId);
 
         peer.on('open', id => {
@@ -76,13 +71,49 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`Client terhubung: ${conn.peer}`);
         connections.push(conn);
         updateClientCount();
-        conn.on('data', data => { if (data.type === 'request') handleClientRequest(data); });
+
+        // Saat menerima data dari client (bisa request lagu atau hapus lagu)
+        conn.on('data', data => {
+            console.log(`Menerima data dari client ${conn.peer}:`, data);
+
+            if (data.type === 'request') {
+                handleClientRequest(data);
+            } 
+            // ===============================================
+            // == LOGIKA BARU UNTUK MENANGANI PERINTAH HAPUS ==
+            // ===============================================
+            else if (data.type === 'remove_song' && typeof data.index === 'number') {
+                console.log(`Menerima perintah hapus untuk indeks ${data.index} dari moderator.`);
+                removeSongFromQueue(data.index);
+            }
+        });
+
+        // Saat client terputus
         conn.on('close', () => {
             connections = connections.filter(c => c.peer !== conn.peer);
             updateClientCount();
             console.log(`Client terputus: ${conn.peer}`);
         });
     }
+    
+    // =======================================================
+    // == FUNGSI BARU UNTUK MENGIRIM PERINTAH HAPUS KE SERVER ==
+    // =======================================================
+    async function removeSongFromQueue(index) {
+        console.log(`Mengirim request hapus ke server lokal untuk indeks: ${index}`);
+        try {
+            await fetch(`${API_URL}/api/remove`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ index: index })
+            });
+            // Tidak perlu melakukan apa-apa lagi. Perubahan akan terlihat
+            // pada siklus syncAndBroadcast() berikutnya.
+        } catch (error) {
+            console.error("Gagal mengirim perintah hapus ke server:", error);
+        }
+    }
+
 
     function updateClientCount() { clientCountElem.textContent = connections.length; }
     function broadcastStateToClients(state) { for (const conn of connections) { if (conn.open) conn.send(state); } }
@@ -114,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 broadcastStateToClients(state);
             }
         } catch (error) {
-            // Tidak perlu menampilkan error di console terus-menerus jika server belum jalan
+            // Tidak perlu log error terus-menerus jika server belum jalan
         }
     }
     function handleStatusUpdate(data) {
@@ -135,7 +166,8 @@ document.addEventListener('DOMContentLoaded', () => {
             nowPlayingElem.innerHTML = `${nowPlayingData.title}<br><span class="requester-info">Req: ${nowPlayingData.requester}</span>`;
             aiIntroElem.textContent = `“${nowPlayingData.intro}”`;
             aiIntroElem.style.display = 'block';
-            if (audioPlayer.src !== nowPlayingData.stream_url) {
+            // Perbaikan kecil: Cek apakah stream_url ada sebelum mencoba memuatnya
+            if (nowPlayingData.stream_url && audioPlayer.src !== nowPlayingData.stream_url) {
                 audioPlayer.src = nowPlayingData.stream_url;
                 audioPlayer.play().catch(e => console.error("Autoplay gagal:", e));
             }
@@ -148,7 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Pemasangan Event Listener ---
-    console.log("Memasang event listener ke tombol 'Start Host'.");
     startHostBtn.addEventListener('click', startHost);
     customRoomIdInput.addEventListener('keypress', e => { if (e.key === 'Enter') startHost(); });
 
@@ -156,8 +187,10 @@ document.addEventListener('DOMContentLoaded', () => {
     skipBtn.addEventListener('click', skipNextSong);
     requestBtn.addEventListener('click', () => {
         const query = queryInput.value.trim();
-        if (query) processRequest('Admin', query);
-        queryInput.value = '';
+        if (query) {
+            processRequest('Admin', query);
+            queryInput.value = '';
+        }
     });
     queryInput.addEventListener('keypress', e => { if (e.key === 'Enter') requestBtn.click(); });
 });
