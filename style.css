@@ -1,0 +1,121 @@
+/* style.css */
+
+/* Gaya Dasar dan Font */
+body {
+    background-color: #121212; /* Latar belakang hitam pekat seperti Spotify */
+    color: #e0e0e0; /* Warna teks putih keabu-abuan */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Jarak antar kartu */
+}
+
+h1, h2, h3 {
+    margin-top: 0;
+    color: #ffffff; /* Judul lebih putih */
+}
+
+h1 {
+    text-align: center;
+    color: #1DB954; /* Warna hijau khas */
+}
+
+h1 .note-icon {
+    display: inline-block;
+    transform: translateY(2px);
+}
+
+p {
+    text-align: center;
+    color: #b3b3b3; /* Teks sekunder */
+}
+
+/* Gaya Kartu */
+.card {
+    background-color: #1e1e1e; /* Warna kartu yang sedikit lebih terang */
+    border-radius: 8px; /* Sudut melengkung */
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card h2 {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+}
+
+/* Gaya Form (Input dan Tombol) */
+input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    background-color: #333;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: #ffffff;
+    box-sizing: border-box; /* Penting agar padding tidak merusak layout */
+    font-size: 16px;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: #1DB954;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #1DB954; /* Warna hijau khas */
+    border: none;
+    border-radius: 25px; /* Tombol lebih bulat */
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #1ed760; /* Warna hijau lebih terang saat disentuh */
+}
+
+/* Gaya Antrian dan Now Playing */
+#now-playing-info, #queue-list {
+    text-align: left;
+}
+
+#queue-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#queue-list li {
+    background-color: #282828;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+/* Gaya Player Audio di Halaman Admin */
+#audio-player {
+    width: 100%;
+    margin-top: 15px;
+}
+
+#next-btn {
+    margin-top: 10px;
+    width: auto;
+    padding: 8px 20px;
+    font-size: 14px;
+}
