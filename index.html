@@ -2,12 +2,9 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <!-- BARIS PALING PENTING UNTUK TAMPILAN MOBILE -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>AI SUKEPLAY</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Pustaka PeerJS untuk menjadi Client -->
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 </head>
 <body>
@@ -17,7 +14,7 @@
             <p>Pembuat: <a href="https://www.tiktok.com/@david.paliwan" target="_blank" rel="noopener noreferrer">David Paliwan, S.Kom</a></p>
         </header>
 
-        <!-- Bagian Koneksi, ditampilkan di awal -->
+        <!-- Bagian Koneksi -->
         <div class="card" id="connection-box">
             <h2>Connect to Host</h2>
             <div class="input-group">
@@ -27,7 +24,7 @@
             <p id="connection-status" class="status-message">Disconnected</p>
         </div>
 
-        <!-- Bagian Utama Aplikasi, disembunyikan sampai terhubung -->
+        <!-- Bagian Utama Aplikasi -->
         <main class="main-content" id="main-app" style="display: none;">
             
             <!-- Kartu Now Playing -->
@@ -38,11 +35,9 @@
                 <div id="ai-intro" class="intro"></div>
             </div>
 
-            <!-- Kartu Request Lagu -->
+            <!-- Kartu Request Lagu (Tanpa Input Nama) -->
             <div class="card request-box">
                 <h2>Request a Song</h2>
-                <!-- Input Nama dipisah agar lebih jelas di mobile -->
-                <input type="text" id="name-input" placeholder="Your Name" style="margin-bottom: 10px;">
                 <div class="input-group">
                     <input type="text" id="song-query-input" placeholder="Song title or artist">
                     <button id="request-btn">Request</button>
