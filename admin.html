@@ -2,38 +2,42 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Suke Play Host</title>
-    <!-- Ganti dengan style.css Anda -->
-    <link rel="stylesheet" href="style.css"> 
-    <!-- Pustaka PeerJS dari CDN -->
+    <title>AI SUKEPLAY - Host</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Pustaka PeerJS untuk menjadi Host -->
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Suke Play Host 👑</h1>
-        <p>HALAMAN ADMIN</p>
-        <p>Your Room ID: <strong id="room-id">Connecting...</strong></p>
-        <p><span id="connection-count">0</span> client(s) connected.</p>
-
-        <div class="card">
-            <h2>Now Playing</h2>
-            <div id="now-playing-info">Jukebox is idle.</div>
-            <audio id="audio-player" controls></audio>
-            <button id="next-btn">>> (Next)</button>
-        </div>
-
-        <div class="card">
-            <h2>Tambahkan lagu (Manual)</h2>
-            <input type="text" id="manual-song-query" placeholder="YouTube Video ID or Title">
-            <button id="manual-add-btn">Tambahkan</button>
-        </div>
-
-        <div class="card">
-            <h2>Selanjutnya</h2>
-            <ul id="queue-list">
-                <li>Queue is empty</li>
-            </ul>
-        </div>
+        <header class="app-header">
+            <h1>Suke Play Host 👑</h1>
+            <!-- Menampilkan Room ID -->
+            <p>Your Room ID: <strong id="room-id">Connecting...</strong></p>
+            <p><span id="client-count">0</span> client(s) connected.</p>
+        </header>
+        <main class="main-content">
+            <div class="card player-box">
+                <h2>Now Playing</h2>
+                <p id="now-playing">Loading...</p>
+                <div id="ai-intro" class="intro"></div>
+                <audio id="audio-player" controls></audio>
+                <div class="host-controls">
+                    <button id="skip-btn" title="Skip to next song">»</button>
+                </div>
+            </div>
+            <div class="card request-box">
+                <h2>Tambahkan lagu (Manual)</h2>
+                <div class="input-group">
+                    <input type="text" id="song-query-input" placeholder="Song title or artist">
+                    <button id="request-btn">Tambahkan</button>
+                </div>
+                <p id="request-status" class="status-message"></p>
+            </div>
+            <div class="card queue-box">
+                <h2>Selanjutnya</h2>
+                <ul id="queue-list"><li>Loading...</li></ul>
+            </div>
+        </main>
     </div>
     <script src="admin.js"></script>
 </body>
