@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI SUKEPLAY - Moderator</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Pustaka PeerJS untuk menjadi Client -->
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 </head>
 <body>
@@ -27,11 +26,29 @@
         <!-- Bagian Utama Aplikasi Moderator -->
         <main class="main-content" id="main-app" style="display: none;">
             
-            <!-- Kartu Now Playing (hanya untuk info) -->
+            <!-- Kartu Now Playing dengan Tombol Skip -->
             <div class="card player-box">
                 <h2>Now Playing</h2>
                 <p id="now-playing">Connecting to host...</p>
                 <p id="wait-time" class="wait-time"></p> 
+                <!-- ==================================== -->
+                <!-- == TOMBOL SKIP DITAMBAHKAN DI SINI == -->
+                <!-- ==================================== -->
+                <div class="host-controls">
+                    <button id="skip-btn" title="Skip to next song">»</button>
+                </div>
+            </div>
+
+            <!-- ======================================= -->
+            <!-- == FORM REQUEST DITAMBAHKAN DI SINI == -->
+            <!-- ======================================= -->
+            <div class="card request-box">
+                <h2>Request a Song</h2>
+                <div class="input-group">
+                    <input type="text" id="song-query-input" placeholder="Song title or artist">
+                    <button id="request-btn">Request</button>
+                </div>
+                <p id="request-status" class="status-message"></p>
             </div>
             
             <!-- Kartu Antrian dengan Tombol Hapus -->
