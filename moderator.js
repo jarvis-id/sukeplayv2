@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Kita gunakan "Moderator" sebagai nama requester
         sendCommandToHost({ type: 'request', name: 'Moderator', query: query });
         queryInput.value = '';
-        setTimeout(() => { requestStatusElem.textContent = ''; }, 3000);
+        setTimeout(() => { requestStatusElem.textContent = ''; }, 3001);
     }
     
     function handleSkipSong() {
