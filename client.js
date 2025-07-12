@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Kirim request dengan nama perangkat yang sudah dideteksi
             conn.send({ type: 'request', name: deviceName, query: query });
             queryInput.value = '';
-            setTimeout(() => { requestStatusElem.textContent = ''; }, 3000);
+            setTimeout(() => { requestStatusElem.textContent = ''; }, 3001);
         } else {
             alert("Tidak terhubung ke Host.");
         }
