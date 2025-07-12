@@ -3,7 +3,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM Loaded. Admin script is now running.");
 
-    const API_URL = 'http://localhost:3001';
+    const API_URL = 'https://3001-cs-308115735963-default.cs-asia-southeast1-palm.cloudshell.dev';
 
     // Elemen UI Setup
     const hostSetupBox = document.getElementById('host-setup-box');
