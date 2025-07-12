@@ -3,7 +3,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM Loaded. Admin script is now running.");
 
-    const API_URL = 'http://localhost:3000';
+    const API_URL = 'http://localhost:3001';
 
     // Elemen UI Setup
     const hostSetupBox = document.getElementById('host-setup-box');
